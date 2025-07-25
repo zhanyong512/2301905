@@ -1,0 +1,55 @@
+name: Secure App CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test-app:
+    runs-on: ubuntu-latest
+
+    services:
+      web:
+        build:
+          context: ./app
+        ports:
+          - 5000:5000
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        working-directory: ./app
+        run: |
+          pip install flask
+          pip install requests
+
+      - name: Run integration test (Ping Flask server)
+        run: |
+          curl --retry 5 --retry-delay 2 --retry-connrefused http://localhost:5000 | grep "Search"
+
+      - name: Run UI test simulation (POST input)
+        run: |
+          curl -X POST http://localhost:5000 -d "term=testinput" | grep "Result"
+
+      - name: Run OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: "SecureFlaskApp"
+          path: "./app"
+          format: "HTML"
+          out: "dependency-check-report"
+
+      - name: Upload Dependency Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: Dependency-Check-Report
+          path: dependency-check-report
