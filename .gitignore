@@ -1,3 +1,5 @@
 # Ignore MySQL volume
 mysql_data/
 repos/
+__pycache__/
+*.pyc

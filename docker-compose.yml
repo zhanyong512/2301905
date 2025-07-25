@@ -1,9 +1,9 @@
 services:
-  nginxwebsvr:
-    image: nginx:alpine
-    container_name: nginxwebsvr
+  webapp:
+    build:
+      context: ./app
     ports:
-      - "80:80"
+      - "5000:5000"
   mysqldb:
     image: mysql:8.0
     restart: always
