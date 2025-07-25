@@ -1,0 +1,25 @@
+services:
+  nginxwebsvr:
+    image: nginx:alpine
+    container_name: nginxwebsvr
+    ports:
+      - "80:80"
+  mysqldb:
+    image: mysql:8.0
+    restart: always
+    volumes:
+    - ./mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 2301905@SIT.singaporetech.edu.sg
+  gitserver:
+    build:
+      dockerfile: gitserver.Dockerfile
+      context: .
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./repos:/home/git

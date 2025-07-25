@@ -1,0 +1,3 @@
+# Ignore MySQL volume
+mysql_data/
+repos/
